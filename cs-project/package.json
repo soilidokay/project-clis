@@ -1,16 +1,17 @@
 {
-  "name": "controller-generator-cli",
-  "version": "1.0.0",
+  "name": "dinocsharp",
+  "version": "1.0.1",
   "description": "CLI tool to generate C# Controller structure using Plop",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "gen-controller": "dist/index.js"
+    "dinocsharp": "dist/index.js"
   },
   "scripts": {
     "build": "npm run clean && tsc && npm run copy-templates",
     "start": "node dist/index.js",
     "dev": "ts-node --esm src/index.ts",
+    "batch": "node dist/index.js --multiple",
     "clean": "rimraf dist",
     "copy-templates": "copyfiles -u 0 templates/**/* dist/",
     "test": "npm run build && npm run test-cli",

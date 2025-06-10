@@ -76,11 +76,68 @@ function detectNamespace() {
     return path.basename(currentPath);
 }
 
+// Function to generate controller files for a single controller
+function generateControllerFiles(name, namespace, roles, outputPath, templatesPath) {
+    const actions = [];
+    const pluralName = pluralize(name);
+
+    roles.forEach(role => {
+        actions.push(
+            {
+                type: 'add',
+                path: `${outputPath}/${pluralName}/${role}/${pluralName}Controller.cs`,
+                templateFile: path.join(templatesPath, 'controller.hbs'),
+                data: { 
+                    type: role,
+                    pluralName: pluralName,
+                    singularName: name,
+                    namespace: namespace
+                }
+            },
+            {
+                type: 'add',
+                path: `${outputPath}/${pluralName}/${role}/${pluralName}DTO.cs`,
+                templateFile: path.join(templatesPath, 'dto.hbs'),
+                data: { 
+                    type: role,
+                    pluralName: pluralName,
+                    singularName: name,
+                    namespace: namespace
+                }
+            },
+            {
+                type: 'add',
+                path: `${outputPath}/${pluralName}/${role}/${pluralName}Service.cs`,
+                templateFile: path.join(templatesPath, 'service.hbs'),
+                data: { 
+                    type: role,
+                    pluralName: pluralName,
+                    singularName: name,
+                    namespace: namespace
+                }
+            },
+            {
+                type: 'add',
+                path: `${outputPath}/${pluralName}/${role}/${pluralName}Template.cs`,
+                templateFile: path.join(templatesPath, 'template.hbs'),
+                data: { 
+                    type: role,
+                    pluralName: pluralName,
+                    singularName: name,
+                    namespace: namespace
+                }
+            }
+        );
+    });
+
+    return actions;
+}
+
 export default function (plop) {
     const detectedNamespace = detectNamespace();
     const templatesPath = getTemplatesPath();
     
-    // Set template directory
+    // Single Controller Generator
     plop.setGenerator('controller', {
         description: 'Generate C# Controller structure with multiple roles',
         prompts: [
@@ -145,64 +202,184 @@ export default function (plop) {
             }
         ],
         actions: function (data) {
-            const actions = [];
-            const pluralName = pluralize(data.name);
-
-            // Generate files for each role
-            data.roles.forEach(role => {
-                actions.push(
-                    {
-                        type: 'add',
-                        path: `{{outputPath}}/${pluralName}/${role}/${pluralName}Controller.cs`,
-                        templateFile: path.join(templatesPath, 'controller.hbs'),
-                        data: { 
-                            type: role,
-                            pluralName: pluralName,
-                            singularName: data.name,
-                            namespace: data.namespace
-                        }
-                    },
-                    {
-                        type: 'add',
-                        path: `{{outputPath}}/${pluralName}/${role}/${pluralName}DTO.cs`,
-                        templateFile: path.join(templatesPath, 'dto.hbs'),
-                        data: { 
-                            type: role,
-                            pluralName: pluralName,
-                            singularName: data.name,
-                            namespace: data.namespace
-                        }
-                    },
-                    {
-                        type: 'add',
-                        path: `{{outputPath}}/${pluralName}/${role}/${pluralName}Service.cs`,
-                        templateFile: path.join(templatesPath, 'service.hbs'),
-                        data: { 
-                            type: role,
-                            pluralName: pluralName,
-                            singularName: data.name,
-                            namespace: data.namespace
-                        }
-                    },
-                    {
-                        type: 'add',
-                        path: `{{outputPath}}/${pluralName}/${role}/${pluralName}Template.cs`,
-                        templateFile: path.join(templatesPath, 'template.hbs'),
-                        data: { 
-                            type: role,
-                            pluralName: pluralName,
-                            singularName: data.name,
-                            namespace: data.namespace
-                        }
-                    }
-                );
-            });
-
-            return actions;
+            return generateControllerFiles(data.name, data.namespace, data.roles, data.outputPath, templatesPath);
         }
     });
 
-    // Quick presets with namespace detection
+    // Multiple Controllers Generator
+    plop.setGenerator('multi-controller', {
+        description: 'Generate multiple C# Controllers at once',
+        prompts: [
+            {
+                type: 'input',
+                name: 'controllers',
+                message: 'Enter controller names (comma separated, e.g., Product,Category,Order,Customer):',
+                validate: function (value) {
+                    if (!value || (typeof value === 'string' && value.trim() === '')) {
+                        return 'At least one controller name is required';
+                    }
+                    return true;
+                },
+                filter: function (value) {
+                    // Ensure value is a string
+                    if (typeof value !== 'string') {
+                        value = String(value);
+                    }
+                    
+                    return value.split(',')
+                        .map(name => {
+                            if (typeof name !== 'string') {
+                                name = String(name);
+                            }
+                            return name.trim();
+                        })
+                        .filter(name => name !== '')
+                        .map(name => name.charAt(0).toUpperCase() + name.slice(1));
+                }
+            },
+            {
+                type: 'input',
+                name: 'namespace',
+                message: 'Enter base namespace:',
+                default: detectedNamespace,
+                validate: function (value) {
+                    if (!value || (typeof value === 'string' && value.trim() === '')) {
+                        return 'Namespace is required';
+                    }
+                    return true;
+                }
+            },
+            {
+                type: 'input',
+                name: 'roles',
+                message: 'Enter roles for all controllers (comma separated, e.g., Admin,User,Manager):',
+                default: 'Admin,User',
+                validate: function (value) {
+                    if (typeof value === 'string') {
+                        if (!value || value.trim() === '') {
+                            return 'At least one role is required';
+                        }
+                    } else if (Array.isArray(value)) {
+                        if (value.length === 0) {
+                            return 'At least one role is required';
+                        }
+                    }
+                    return true;
+                },
+                filter: function (value) {
+                    // Ensure value is a string
+                    if (typeof value !== 'string') {
+                        if (Array.isArray(value)) {
+                            return value;
+                        }
+                        value = String(value);
+                    }
+                    
+                    return value.split(',')
+                        .map(role => {
+                            if (typeof role !== 'string') {
+                                role = String(role);
+                            }
+                            return role.trim();
+                        })
+                        .filter(role => role !== '')
+                        .map(role => role.charAt(0).toUpperCase() + role.slice(1));
+                }
+            },
+            {
+                type: 'input',
+                name: 'outputPath',
+                message: 'Enter output path:',
+                default: controllerPathOutput
+            }
+        ],
+        actions: function (data) {
+            const allActions = [];
+            
+            // Ensure controllers is an array
+            let controllers = data.controllers;
+            if (!Array.isArray(controllers)) {
+                controllers = [controllers];
+            }
+            
+            // Generate files for each controller
+            controllers.forEach(controllerName => {
+                const actions = generateControllerFiles(controllerName, data.namespace, data.roles, data.outputPath, templatesPath);
+                allActions.push(...actions);
+            });
+
+            // Add a summary action
+            allActions.push({
+                type: 'add',
+                path: `${data.outputPath}/.generation-summary.txt`,
+                template: `Generated ${controllers.length} controllers: ${controllers.join(', ')}
+With roles: ${Array.isArray(data.roles) ? data.roles.join(', ') : data.roles}
+Namespace: ${data.namespace}
+Generated at: ${new Date().toLocaleString()}
+=====================================`
+            });
+
+            return allActions;
+        }
+    });
+
+    // Batch Generator với file config
+    plop.setGenerator('batch-controller', {
+        description: 'Generate controllers from JSON config file',
+        prompts: [
+            {
+                type: 'input',
+                name: 'configFile',
+                message: 'Enter path to JSON config file (e.g., ./controllers-config.json):',
+                default: './controllers-config.json',
+                validate: function (value) {
+                    if (!value || value.trim() === '') {
+                        return 'Config file path is required';
+                    }
+                    try {
+                        const configPath = path.resolve(value);
+                        if (!fs.existsSync(configPath)) {
+                            return `Config file not found: ${configPath}`;
+                        }
+                        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+                        if (!config.controllers || !Array.isArray(config.controllers)) {
+                            return 'Config file must have "controllers" array';
+                        }
+                        return true;
+                    } catch (error) {
+                        return `Invalid config file: ${error.message}`;
+                    }
+                }
+            },
+            {
+                type: 'input',
+                name: 'outputPath',
+                message: 'Enter output path (optional, will use config default):',
+                default: ''
+            }
+        ],
+        actions: function (data) {
+            const configPath = path.resolve(data.configFile);
+            const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+            const outputPath = data.outputPath || config.outputPath || controllerPathOutput;
+            const namespace = config.namespace || detectedNamespace;
+            
+            const allActions = [];
+            
+            config.controllers.forEach(controllerConfig => {
+                const name = controllerConfig.name;
+                const roles = controllerConfig.roles || config.defaultRoles || ['Admin', 'User'];
+                const controllerNamespace = controllerConfig.namespace || namespace;
+                
+                const actions = generateControllerFiles(name, controllerNamespace, roles, outputPath, templatesPath);
+                allActions.push(...actions);
+            });
+
+            return allActions;
+        }
+    });
+
+    // Quick presets
     plop.setGenerator('preset-admin-user', {
         description: 'Quick: Generate with Admin and User only',
         prompts: [
@@ -235,59 +412,69 @@ export default function (plop) {
         ],
         actions: function (data) {
             const roles = ['Admin', 'User'];
-            const actions = [];
-            const pluralName = pluralize(data.name);
+            return generateControllerFiles(data.name, data.namespace, roles, data.outputPath, templatesPath);
+        }
+    });
 
-            roles.forEach(role => {
-                actions.push(
-                    {
-                        type: 'add',
-                        path: `{{outputPath}}/${pluralName}/${role}/${pluralName}Controller.cs`,
-                        templateFile: path.join(templatesPath, 'controller.hbs'),
-                        data: { 
-                            type: role,
-                            pluralName: pluralName,
-                            singularName: data.name,
-                            namespace: data.namespace
-                        }
-                    },
-                    {
-                        type: 'add',
-                        path: `{{outputPath}}/${pluralName}/${role}/${pluralName}DTO.cs`,
-                        templateFile: path.join(templatesPath, 'dto.hbs'),
-                        data: { 
-                            type: role,
-                            pluralName: pluralName,
-                            singularName: data.name,
-                            namespace: data.namespace
-                        }
-                    },
-                    {
-                        type: 'add',
-                        path: `{{outputPath}}/${pluralName}/${role}/${pluralName}Service.cs`,
-                        templateFile: path.join(templatesPath, 'service.hbs'),
-                        data: { 
-                            type: role,
-                            pluralName: pluralName,
-                            singularName: data.name,
-                            namespace: data.namespace
-                        }
-                    },
-                    {
-                        type: 'add',
-                        path: `{{outputPath}}/${pluralName}/${role}/${pluralName}Template.cs`,
-                        templateFile: path.join(templatesPath, 'template.hbs'),
-                        data: { 
-                            type: role,
-                            pluralName: pluralName,
-                            singularName: data.name,
-                            namespace: data.namespace
-                        }
+    plop.setGenerator('preset-crud-complete', {
+        description: 'Quick: Generate with all CRUD roles (Admin,User,Manager,SuperAdmin,Guest,Moderator)',
+        prompts: [
+            {
+                type: 'input',
+                name: 'controllers',
+                message: 'Enter controller names (comma separated):',
+                validate: function (value) {
+                    if (!value || (typeof value === 'string' && value.trim() === '')) {
+                        return 'At least one controller name is required';
                     }
-                );
+                    return true;
+                },
+                filter: function (value) {
+                    // Ensure value is a string
+                    if (typeof value !== 'string') {
+                        value = String(value);
+                    }
+                    
+                    return value.split(',')
+                        .map(name => {
+                            if (typeof name !== 'string') {
+                                name = String(name);
+                            }
+                            return name.trim();
+                        })
+                        .filter(name => name !== '')
+                        .map(name => name.charAt(0).toUpperCase() + name.slice(1));
+                }
+            },
+            {
+                type: 'input',
+                name: 'namespace',
+                message: 'Enter base namespace:',
+                default: detectedNamespace
+            },
+            {
+                type: 'input',
+                name: 'outputPath',
+                message: 'Enter output path:',
+                default: controllerPathOutput
+            }
+        ],
+        actions: function (data) {
+            const roles = ['Admin', 'User', 'Manager', 'SuperAdmin', 'Guest', 'Moderator'];
+            const allActions = [];
+            
+            // Ensure controllers is an array
+            let controllers = data.controllers;
+            if (!Array.isArray(controllers)) {
+                controllers = [controllers];
+            }
+            
+            controllers.forEach(controllerName => {
+                const actions = generateControllerFiles(controllerName, data.namespace, roles, data.outputPath, templatesPath);
+                allActions.push(...actions);
             });
 
-            return actions;
+            return allActions;
         }
     });
 }
