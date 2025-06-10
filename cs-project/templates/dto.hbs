@@ -1,0 +1,26 @@
+{{!-- filepath: d:\project-clis\cs-project\templates\dto.hbs --}}
+using ATM.Data.Entities;
+
+namespace {{namespace}}.Controllers.{{pluralName}}.{{type}}
+{
+    public class {{pluralName}}{{type}}DTO : CRUDBase
+    {
+        public class View : View<{{singularName}}>
+        {
+            public Guid Id { get; set; }
+        }
+
+        public class Create : Create<{{singularName}}> { }
+        public class UserCreate : Create<{{singularName}}>
+        {
+        }
+
+        public class Edit : Edit<{{singularName}}>
+        {
+        }
+        public class Key : Key<{{singularName}}>
+        {
+            public Guid Id { get; set; }
+        }
+    }
+}

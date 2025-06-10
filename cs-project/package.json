@@ -1,0 +1,45 @@
+{
+  "name": "controller-generator-cli",
+  "version": "1.0.0",
+  "description": "CLI tool to generate C# Controller structure using Plop",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "gen-controller": "dist/index.js"
+  },
+  "scripts": {
+    "build": "npm run clean && tsc && npm run copy-templates",
+    "start": "node dist/index.js",
+    "dev": "ts-node --esm src/index.ts",
+    "clean": "rimraf dist",
+    "copy-templates": "copyfiles -u 0 templates/**/* dist/",
+    "test": "npm run build && npm run test-cli",
+    "test-cli": "node dist/index.js"
+  },
+  "dependencies": {
+    "plop": "^3.1.2",
+    "chalk": "^4.1.2",
+    "minimist": "^1.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/minimist": "^1.2.5",
+    "typescript": "^5.2.2",
+    "ts-node": "^10.9.1",
+    "rimraf": "^5.0.5",
+    "copyfiles": "^2.4.1"
+  },
+  "files": [
+    "dist/**/*",
+    "templates/**/*"
+  ],
+  "keywords": [
+    "cli",
+    "code-generator",
+    "csharp",
+    "controller",
+    "plop"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

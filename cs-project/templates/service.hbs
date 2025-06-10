@@ -1,0 +1,16 @@
+{{!-- filepath: d:\project-clis\cs-project\templates\service.hbs --}}
+using Microsoft.EntityFrameworkCore;
+
+namespace {{namespace}}.Controllers.{{pluralName}}.{{type}}
+{
+    public interface I{{pluralName}}Service : {{pluralName}}Template.ICRUDService
+    {
+    }
+    [CRUDTemplate]
+    public class {{pluralName}}Service : {{pluralName}}Template.CRUDServiceBase, I{{pluralName}}Service
+    {
+        public {{pluralName}}Service(DbContext dbContext) : base(dbContext)
+        {
+        }
+    }
+}
