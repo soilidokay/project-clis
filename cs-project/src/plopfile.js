@@ -82,11 +82,17 @@ function generateControllerFiles(name, namespace, roles, outputPath, templatesPa
     const pluralName = pluralize(name);
 
     roles.forEach(role => {
+        const controllerPath = `${outputPath}/${pluralName}/${role}/${pluralName}Controller.cs`;
+        const dtoPath = `${outputPath}/${pluralName}/${role}/${pluralName}DTO.cs`;
+        const servicePath = `${outputPath}/${pluralName}/${role}/${pluralName}Service.cs`;
+        const templatePath = `${outputPath}/${pluralName}/${role}/${pluralName}Template.cs`;
+
         actions.push(
             {
                 type: 'add',
-                path: `${outputPath}/${pluralName}/${role}/${pluralName}Controller.cs`,
+                path: controllerPath,
                 templateFile: path.join(templatesPath, 'controller.hbs'),
+                skipIfExists: true, // Skip if file exists
                 data: { 
                     type: role,
                     pluralName: pluralName,
@@ -96,8 +102,9 @@ function generateControllerFiles(name, namespace, roles, outputPath, templatesPa
             },
             {
                 type: 'add',
-                path: `${outputPath}/${pluralName}/${role}/${pluralName}DTO.cs`,
+                path: dtoPath,
                 templateFile: path.join(templatesPath, 'dto.hbs'),
+                skipIfExists: true,
                 data: { 
                     type: role,
                     pluralName: pluralName,
@@ -107,8 +114,9 @@ function generateControllerFiles(name, namespace, roles, outputPath, templatesPa
             },
             {
                 type: 'add',
-                path: `${outputPath}/${pluralName}/${role}/${pluralName}Service.cs`,
+                path: servicePath,
                 templateFile: path.join(templatesPath, 'service.hbs'),
+                skipIfExists: true,
                 data: { 
                     type: role,
                     pluralName: pluralName,
@@ -118,8 +126,9 @@ function generateControllerFiles(name, namespace, roles, outputPath, templatesPa
             },
             {
                 type: 'add',
-                path: `${outputPath}/${pluralName}/${role}/${pluralName}Template.cs`,
+                path: templatePath,
                 templateFile: path.join(templatesPath, 'template.hbs'),
+                skipIfExists: true,
                 data: { 
                     type: role,
                     pluralName: pluralName,

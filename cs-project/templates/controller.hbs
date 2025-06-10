@@ -1,8 +1,8 @@
 {{!-- filepath: d:\project-clis\cs-project\templates\controller.hbs --}}
 namespace {{namespace}}.Controllers.{{pluralName}}.{{type}}
 {
-    [ISV4AdminAuthorizedJWT]
-    [AdminRoute]
+    [ISV4{{type}}AuthorizedJWT]
+    [{{type}}Route]
     public class {{pluralName}}Controller : {{pluralName}}Template.CRUDControllerBase
     {
         public {{pluralName}}Controller(I{{pluralName}}Service service) : base(service)
