@@ -1,11 +1,39 @@
 {
   "name": "dinocsharp",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "CLI tool to generate C# Controller structure using Plop",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "dinocsharp": "dist/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "cli",
+    "csharp",
+    "controller",
+    "generator",
+    "plop",
+    "dotnet",
+    "crud",
+    "api"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/dinocsharp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/dinocsharp/issues"
+  },
+  "homepage": "https://github.com/yourusername/dinocsharp#readme",
+  "engines": {
+    "node": ">=16.0.0"
   },
   "scripts": {
     "build": "npm run clean && tsc && npm run copy-templates",
@@ -15,7 +43,8 @@
     "clean": "rimraf dist",
     "copy-templates": "copyfiles -u 0 templates/**/* dist/",
     "test": "npm run build && npm run test-cli",
-    "test-cli": "node dist/index.js"
+    "test-cli": "node dist/index.js",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "plop": "^3.1.2",
@@ -23,24 +52,10 @@
     "minimist": "^1.2.8"
   },
   "devDependencies": {
-    "@types/node": "^20.8.0",
-    "@types/minimist": "^1.2.5",
-    "typescript": "^5.2.2",
-    "ts-node": "^10.9.1",
-    "rimraf": "^5.0.5",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "ts-node": "^10.9.0",
+    "rimraf": "^5.0.0",
     "copyfiles": "^2.4.1"
-  },
-  "files": [
-    "dist/**/*",
-    "templates/**/*"
-  ],
-  "keywords": [
-    "cli",
-    "code-generator",
-    "csharp",
-    "controller",
-    "plop"
-  ],
-  "author": "Your Name",
-  "license": "MIT"
+  }
 }
