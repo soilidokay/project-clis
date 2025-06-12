@@ -1,6 +1,6 @@
 {
   "name": "dinocsharp",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "CLI tool to generate C# Controller structure using Plop",
   "type": "module",
   "main": "dist/index.js",
@@ -22,16 +22,13 @@
     "crud",
     "api"
   ],
-  "author": "Your Name <your.email@example.com>",
+  "author": "tainguyen.ntt.97@gmail.com",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/dinocsharp.git"
+    "url": "https://github.com/soilidokay/project-clis/blob/master/cs-project"
   },
-  "bugs": {
-    "url": "https://github.com/yourusername/dinocsharp/issues"
-  },
-  "homepage": "https://github.com/yourusername/dinocsharp#readme",
+  "homepage": "https://github.com/soilidokay/project-clis/blob/master/cs-project/README.md",
   "engines": {
     "node": ">=16.0.0"
   },
