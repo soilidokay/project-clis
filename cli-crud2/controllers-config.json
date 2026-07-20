@@ -1,0 +1,31 @@
+{
+  "namespace": "ATM.v3.Api",
+  "outputPath": "./Controllers",
+  "defaultRoles": ["Admin", "User"],
+  "controllers": [
+    {
+      "name": "Product",
+      "roles": ["Admin", "User", "Manager"]
+    },
+    {
+      "name": "Category",
+      "roles": ["Admin", "User"]
+    },
+    {
+      "name": "Order",
+      "roles": ["Admin", "User", "Manager", "SuperAdmin"]
+    },
+    {
+      "name": "Customer",
+      "roles": ["Admin", "User"]
+    },
+    {
+      "name": "Inventory",
+      "roles": ["Admin", "Manager"]
+    },
+    {
+      "name": "Report",
+      "roles": ["Admin", "SuperAdmin"]
+    }
+  ]
+}

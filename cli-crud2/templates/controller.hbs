@@ -1,0 +1,14 @@
+{{!-- filepath: d:\project-clis\cli-crud2\templates\controller.hbs --}}
+using {{namespace}}.Attributes;
+
+namespace {{namespace}}.Controllers.{{type}}
+{
+    [{{type}}Route]
+    [JWT{{type}}Authorize]
+    public class {{pluralName}}Controller : {{pluralName}}Template.ControllerBase
+    {
+        public {{pluralName}}Controller(IServiceProvider provider) : base(provider)
+        {
+        }
+    }
+}

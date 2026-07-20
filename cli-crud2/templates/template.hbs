@@ -1,0 +1,36 @@
+{{!-- filepath: d:\project-clis\cli-crud2\templates\template.hbs --}}
+using Dinocollab.Library.CRUD.ApiCore;
+using {{namespace}}.Adaters;
+using Dinocollab.RewardSystem.Data;
+using Dinocollab.RewardSystem.Data.Entities.Content;
+using Microsoft.EntityFrameworkCore;
+
+namespace {{namespace}}.Controllers.{{type}}
+{
+    public class {{pluralName}}TemplateDTO
+    {
+        public class View
+        {
+            public Guid Id { get; set; }
+        }
+        public class Create
+        {
+        }
+        public class Update
+        {
+        }
+        public class TKey
+        {
+            public Guid Id { get; set; }
+        }
+    }
+    public class {{pluralName}}Adapter : HttpEFAdapterWithDbContext<RewardDbContext, {{singularName}}>
+    {
+        public {{pluralName}}Adapter(IDbContextFactory<RewardDbContext> dbContextFactory, IHttpContextAccessor contextAccessor) : base(dbContextFactory, contextAccessor)
+        {
+        }
+    }
+    public class {{pluralName}}Template : CRUDTemplateType<{{pluralName}}Adapter, {{singularName}}, {{pluralName}}TemplateDTO.View, {{pluralName}}TemplateDTO.Create, {{pluralName}}TemplateDTO.Update, {{pluralName}}TemplateDTO.TKey>
+    {
+    }
+}
