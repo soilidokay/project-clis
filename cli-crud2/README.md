@@ -1,47 +1,44 @@
-# DinoCSharp 🦕
+# crud-csharp — CLI sinh mã Controller C# (CRUD)
 
-[![npm version](https://badge.fury.io/js/dinocsharp.svg)](https://badge.fury.io/js/dinocsharp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A powerful CLI tool to generate C# Controller structures with CRUD operations, DTOs, Services, and Templates using Plop.js.
+`crud-csharp` là công cụ CLI dùng Plop.js để sinh nhanh cấu trúc Controller C# với các thành phần CRUD, DTO, Service và template.
 
-## Features
+## Tính năng
 
-- 🚀 Generate complete C# Controller structure
-- 📁 Support for multiple roles (Admin, User)
-- 🎯 Customizable namespaces and output paths
-- 📄 Auto-generate DTOs, Services, and Templates
-- 🔧 Batch generation from JSON config
-- 💼 TypeScript support
-- 🎨 Beautiful CLI interface with Chalk
+- Sinh đầy đủ cấu trúc Controller cho từng feature
+- Hỗ trợ nhiều vai trò (ví dụ: Admin, User)
+- Cấu hình namespace và đường dẫn xuất file
+- Sinh DTO, Service và template tự động
+- Hỗ trợ sinh hàng loạt từ file JSON cấu hình
 
-## Installation
+## Cài đặt
 
-### Global Installation
+### Cài đặt toàn cục
 ```bash
-npm install -g dinocsharp
+npm install -g crud-csharp
 ```
 
-### Local Installation
+### Cài đặt cục bộ (trong dự án)
 ```bash
-npm install dinocsharp
+npm install crud-csharp
 ```
 
-## Usage
+## Sử dụng
 
-### Interactive Mode
+### Chế độ tương tác (mặc định)
 ```bash
-dinocsharp
+crud-csharp
 ```
 
-### Batch Mode with Config File
+### Chế độ hàng loạt (dùng file cấu hình)
 ```bash
-dinocsharp --multiple
+crud-csharp --multiple
 ```
 
-## Configuration
+## Cấu hình (controllers-config.json)
 
-Create a `controllers-config.json` file:
+Tạo file `controllers-config.json` với cấu trúc ví dụ:
 
 ```json
 {
@@ -49,19 +46,13 @@ Create a `controllers-config.json` file:
   "outputPath": "./Controllers",
   "defaultRoles": ["Admin", "User"],
   "controllers": [
-    {
-      "name": "Product",
-      "roles": ["Admin", "User"]
-    },
-    {
-      "name": "Category",
-      "roles": ["Admin"]
-    }
+    { "name": "Product", "roles": ["Admin", "User"] },
+    { "name": "Category", "roles": ["Admin"] }
   ]
 }
 ```
 
-## Generated Structure
+## Cấu trúc kết quả mẫu
 
 ```
 Controllers/
@@ -72,293 +63,20 @@ Controllers/
 │   │   ├── ProductsService.cs
 │   │   └── ProductsTemplate.cs
 │   └── User/
-│       ├── ProductsController.cs
-│       ├── ProductsDTO.cs
-│       ├── ProductsService.cs
-│       └── ProductsTemplate.cs
+│       └── [các file tương tự]
 ```
 
-## Templates
+## Lệnh tiện ích trong `package.json` (phát triển)
 
-The CLI generates the following files for each controller:
+- `npm run build` — build TypeScript và copy templates
+- `npm run dev` — chạy trực tiếp từ `src` (ts-node)
+- `npm run batch` — chạy chế độ batch (`--multiple`)
 
-- **Controller**: API endpoints with CRUD operations
-- **DTO**: Data Transfer Objects for View, Create, Edit, Key
-- **Service**: Business logic layer
-- **Template**: Configuration template
+## Mẹo
 
-## Available Generators
+- Sử dụng file JSON để sinh nhiều controller cùng lúc
+- Đặt `namespace` và `outputPath` phù hợp với dự án ASP.NET Core của bạn
 
-1. **single-controller**: Generate a single controller with roles
-2. **batch-controller**: Generate multiple controllers from config file
-3. **preset-admin-user**: Quick preset for Admin and User roles
+---
 
-## Examples
-
-### Single Controller Generation
-```bash
-# Run interactive mode
-dinocsharp
-
-# Follow the prompts:
-# ? Controller name: Product
-# ? Namespace: MyShop.API
-# ? Output path: ./Controllers
-# ? Select roles: Admin, User
-```
-
-**Generated files:**
-```
-Controllers/
-├── Products/
-│   ├── Admin/
-│   │   ├── ProductsController.cs
-│   │   ├── ProductsDTO.cs
-│   │   ├── ProductsService.cs
-│   │   └── ProductsTemplate.cs
-│   └── User/
-│       ├── ProductsController.cs
-│       ├── ProductsDTO.cs
-│       ├── ProductsService.cs
-│       └── ProductsTemplate.cs
-```
-
-### Batch Generation with Config File
-
-Create `controllers-config.json`:
-```json
-{
-  "namespace": "ECommerce.API",
-  "outputPath": "./src/Controllers",
-  "defaultRoles": ["Admin", "User", "Manager"],
-  "controllers": [
-    {
-      "name": "Product",
-      "roles": ["Admin", "User", "Manager"]
-    },
-    {
-      "name": "Category", 
-      "roles": ["Admin", "Manager"]
-    },
-    {
-      "name": "Order",
-      "roles": ["Admin", "User"]
-    },
-    {
-      "name": "User",
-      "roles": ["Admin"]
-    }
-  ]
-}
-```
-
-Run batch generation:
-```bash
-dinocsharp --multiple
-```
-
-**Generated structure:**
-```
-src/Controllers/
-├── Products/
-│   ├── Admin/
-│   │   ├── ProductsController.cs
-│   │   ├── ProductsDTO.cs
-│   │   ├── ProductsService.cs
-│   │   └── ProductsTemplate.cs
-│   ├── User/
-│   │   └── [same files...]
-│   └── Manager/
-│       └── [same files...]
-├── Categories/
-│   ├── Admin/
-│   │   └── [same files...]
-│   └── Manager/
-│       └── [same files...]
-├── Orders/
-│   ├── Admin/
-│   │   └── [same files...]
-│   └── User/
-│       └── [same files...]
-└── Users/
-    └── Admin/
-        └── [same files...]
-```
-
-### Generated Code Examples
-
-#### Controller Example
-```csharp
-// ProductsController.cs (Admin role)
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-
-namespace ECommerce.API.Controllers.Products.Admin
-{
-    [ApiController]
-    [Route("api/admin/products")]
-    [Authorize(Roles = "Admin")]
-    public class ProductsController : ControllerBase
-    {
-        private readonly ProductsService _service;
-
-        public ProductsController(ProductsService service)
-        {
-            _service = service;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductViewDTO>>> GetAll()
-        {
-            var result = await _service.GetAllAsync();
-            return Ok(result);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ProductViewDTO>> GetById(int id)
-        {
-            var result = await _service.GetByIdAsync(id);
-            return result != null ? Ok(result) : NotFound();
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<ProductViewDTO>> Create([FromBody] ProductCreateDTO dto)
-        {
-            var result = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ProductViewDTO>> Update(int id, [FromBody] ProductEditDTO dto)
-        {
-            var result = await _service.UpdateAsync(id, dto);
-            return result != null ? Ok(result) : NotFound();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var success = await _service.DeleteAsync(id);
-            return success ? NoContent() : NotFound();
-        }
-    }
-}
-```
-
-#### DTO Example
-```csharp
-// ProductsDTO.cs
-namespace ECommerce.API.Controllers.Products.Admin
-{
-    public class ProductViewDTO
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
-
-    public class ProductCreateDTO
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-    }
-
-    public class ProductEditDTO
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-    }
-
-    public class ProductKeyDTO
-    {
-        public int Id { get; set; }
-    }
-}
-```
-
-### Command Line Options
-
-```bash
-# Interactive mode (default)
-dinocsharp
-
-# Batch mode with default config file
-dinocsharp --multiple
-
-# Batch mode with custom config file
-dinocsharp --multiple --config=./my-config.json
-
-# Help
-dinocsharp --help
-
-# Version
-dinocsharp --version
-```
-
-### Advanced Usage
-
-#### Custom Namespace Structure
-```json
-{
-  "namespace": "MyCompany.ProjectName.WebAPI",
-  "outputPath": "./src/Areas/API/Controllers",
-  "defaultRoles": ["SuperAdmin", "Admin", "User", "Guest"],
-  "controllers": [
-    {
-      "name": "Product",
-      "roles": ["SuperAdmin", "Admin", "User"]
-    }
-  ]
-}
-```
-
-#### Role-Based Access Examples
-```bash
-# Generate controller for specific roles only
-# When prompted, select only needed roles:
-# ? Select roles: SuperAdmin, Admin (deselect User, Guest)
-```
-
-#### Integration with ASP.NET Core Project
-```bash
-# Navigate to your ASP.NET Core project
-cd MyWebAPI
-
-# Generate controllers in the correct location
-dinocsharp
-# ? Output path: ./Controllers
-# ? Namespace: MyWebAPI.Controllers
-```
-
-### Tips & Best Practices
-
-1. **Consistent Naming**: Use PascalCase for controller names (Product, UserProfile, OrderItem)
-
-2. **Namespace Convention**: Follow your project's namespace structure
-   ```json
-   "namespace": "CompanyName.ProjectName.API"
-   ```
-
-3. **Role Management**: Plan your roles before generation
-   ```json
-   "defaultRoles": ["Admin", "Manager", "User", "Guest"]
-   ```
-
-4. **Output Structure**: Organize by feature
-   ```
-   Controllers/
-   ├── Products/     # Product management
-   ├── Orders/       # Order management  
-   └── Users/        # User management
-   ```
-
-5. **Batch Processing**: Use config files for multiple controllers
-   ```bash
-   # Create controllers-config.json first, then:
-   dinocsharp --multiple
-   ```
+Nếu bạn muốn mình chỉnh thêm phần nào (dịch kỹ hơn, thêm ví dụ, hoặc cập nhật badges/links), nói mình biết.
